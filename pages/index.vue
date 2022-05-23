@@ -1,5 +1,5 @@
 <template>
-  <div>Index</div>
+  <div>List user</div>
 </template>
 
 <script>
