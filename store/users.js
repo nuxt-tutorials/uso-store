@@ -1,51 +1,68 @@
 const initialState = {
-  user: null,
-  loggedIn: false,
+  users: [],
+  user: null
 }
 
-export const state = () => ({ ...initialState })
+export const state = () => ({...initialState})
 
 export const mutations = {
-  RESET(state) {
-    const newState = initialState
-    Object.keys(newState).forEach((key) => {
-      state[key] = newState[key]
-    })
-  },
-  SET_STATE_AUTH(state, { type, value }) {
+  SET_STATE_USERS(state, {type, value}) {
     state[type] = value
   },
-  SET_KEY_USER(state, { type, value }) {
-    state.user[type] = value
+  ADD_USER(state, user) {
+    state.users.push(user)
   },
-  ADD_TOKEN(state, token) {
-    this.$axios.setToken(token, 'Bearer')
-    state.loggedIn = true
-    this.$cookies.set('auth.everest.token', token)
-  },
-  REMOVE_TOKEN(state) {
-    this.$axios.setToken(false)
-    state.loggedIn = false
-    state.user = null
-    this.$cookies.remove('auth.everest.token')
+  DELETE_USER(state, id) {
+    const index = state.users.findIndex(user => user.id === id)
+
+    if (index !== -1) {
+      state.users.splice(index, 1)
+    }
   },
 }
 
 export const actions = {
-  async login({ commit }, params) {
-    const response = await this.$repository.v3.match.auth.postLogin(params)
+  async fetchUsers({commit}) {
+    const response = await this.$repository.users.getUsers()
 
     if (response.success) {
-      commit('ADD_TOKEN', response.result.access_token)
+      commit('SET_STATE_USERS', {
+        type: 'users',
+        value: response.result,
+      })
     }
 
     return response
   },
-  async fetchMe({ commit }) {
-    const response = await this.$repository.v3.match.auth.getMe()
+  async addUser({state, commit}, params) {
+    const response = await this.$repository.users.postUser(params)
 
     if (response.success) {
-      commit('SET_STATE_AUTH', { type: 'user', value: response.result })
+      commit('ADD_USER', {
+        id: response.id,
+        ...params,
+      })
+    }
+
+    return response
+  },
+  async fetchUser({state, commit}, id) {
+    const response = await this.$repository.users.getUser(id)
+
+    if (response.success) {
+      commit('SET_STATE_USERS', {
+        type: 'user',
+        value: response.result,
+      })
+    }
+
+    return response
+  },
+  async deleteUser({state, commit}, id) {
+    const response = await this.$repository.users.deleteUser(id)
+
+    if (response.success) {
+      commit('DELETE_USER', id)
     }
 
     return response

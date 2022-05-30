@@ -1,7 +1,5 @@
-import SupportV2 from '~/repositories/request/v2/support'
+import Users from '~/repositories/request/users'
 
 export default ($axios) => ({
-  v2: {
-    support: SupportV2($axios),
-  },
+  users: Users($axios),
 })

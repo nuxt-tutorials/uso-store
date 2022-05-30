@@ -1,7 +1,7 @@
 export default {
   telemetry: false,
 
-  ssr: true,
+  ssr: false,
   target: 'static',
 
   head: {
@@ -16,15 +16,12 @@ export default {
   },
 
   plugins: [
+    '~/plugins/axios',
     '~/plugins/injects/requestRepository',
-    '~/plugins/injects/featureFlags',
   ],
-
-  components: false,
 
   buildModules: [
     '@nuxt/postcss8',
-    '@nuxtjs/eslint-module',
     '@nuxtjs/tailwindcss',
   ],
 

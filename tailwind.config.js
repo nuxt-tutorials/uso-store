@@ -13,7 +13,7 @@ module.exports = {
   ],
   theme: {
     fontFamily: {
-      sans: ['Nunito Sans', 'sans-serif'],
+      sans: ['sans-serif'],
     },
   },
 }
